@@ -10,6 +10,10 @@ test.beforeEach(async () => {
   token = getToken()
 })
 
+test.afterAll(async () => {
+  await deleteUser();
+})
+
 test('Should Get Contact List', async () => {
 
   let request = await getRequest();
@@ -52,6 +56,3 @@ test('Should add contact', async () => {
   await expect(responseBody).toMatchObject(contactData);
 });
 
-test.afterAll(async () => {
-  await deleteUser();
-})
