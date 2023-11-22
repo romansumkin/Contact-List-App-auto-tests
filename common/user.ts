@@ -1,26 +1,15 @@
 import { request } from "@playwright/test";
-import { API_URL} from "../utils/constants"
+import { API_URL } from "../utils/constants"
+import { randomString } from "./utils";
+
 
 export const getRequest = async () =>
   request.newContext({
     baseURL: API_URL,
-    storageState: 'state.json'
   });
 
+export async function getToken() {
 
-export function randomString(length) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
-}
-export async function createUser(){
-  
   let request = await getRequest();
 
   const randomName = `test${randomString(5)}`;
@@ -32,28 +21,19 @@ export async function createUser(){
     firstName: randomName,
     lastName: randomLastName,
     email: randomEmail,
-    password: randomPassword 
-  }
+    password: randomPassword,
+  };
 
-  const response = await request.post(
-  '/users',
-  {
-      data: body,
-  }
-  );
-
-  const bodyLogin = {
-    email: randomEmail,
-    password: randomPassword
-  }
-  const responseLogin = await request.post(
-    '/users/login',
-    {
-      data:bodyLogin
-    }
-  )
-  await request.storageState({ path: 'state.json' });
-
+  const response = await request.post('/users', {
+    data: body,
+  });
+  const responseJson = await response.json();
+  return responseJson.token;
 }
 
+export async function deleteUser() {
 
+  let request = await getRequest();
+
+  const response = await request.delete('/users/me')
+}
