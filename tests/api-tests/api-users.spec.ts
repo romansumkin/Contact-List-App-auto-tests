@@ -53,5 +53,5 @@ test('Should add contact', async () => {
 });
 
 test.afterAll(async () => {
-  deleteUser();
+  await deleteUser();
 })
